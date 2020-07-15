@@ -1,7 +1,6 @@
 - hosts: all
   tasks:
   - name: Update and upgrade apt packages
-    become: true
     apt:
       upgrade: yes
       update_cache: yes
@@ -15,6 +14,12 @@
       - iotop
       - glances
       state: present
+
+  - name: Remove root password
+    replace:
+      path: /etc/shadow
+      regexp: "^root:[^:]+:"
+      replace: "root:*:"
 
   - name: Create sudo group
     group:
@@ -32,3 +37,27 @@
       pkg:
       - glusterfs-server
       state: present
+
+  - name: Set authorized key for user feedc0de copying it from current user
+    authorized_key:
+      user: root
+      state: present
+      key: '{{ item }}'
+    with_file:
+      - public_cloud/feedc0de@blechkistn
+      - public_cloud/feedc0de@flucky-server
+      - public_cloud/feedc0de@kuischronk
+      - public_cloud/feedc0de@virtual-linux
+      - public_cloud/JuiceSSH
+
+  - name: Set authorized key for user feedc0de copying it from current user
+    authorized_key:
+      user: feedc0de
+      state: present
+      key: '{{ item }}'
+    with_file:
+      - public_cloud/feedc0de@blechkistn
+      - public_cloud/feedc0de@flucky-server
+      - public_cloud/feedc0de@kuischronk
+      - public_cloud/feedc0de@virtual-linux
+      - public_cloud/JuiceSSH
