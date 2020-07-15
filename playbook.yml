@@ -21,6 +21,12 @@
       regexp: "^root:[^:]+:"
       replace: "root:*:"
 
+  - name: Make sudoers %sudo password-less
+    lineinfile:
+      path: /etc/sudoers
+      regexp: '^[\t ]*%sudo'
+      line: '%sudo ALL=(ALL:ALL) NOPASSWD: ALL'
+
   - name: Create sudo group
     group:
       name: sudo
@@ -30,6 +36,7 @@
     user:
       name: feedc0de
       groups: sudo
+      shell: /bin/bash
       state: present
 
   - name: Install glusterfs packages
