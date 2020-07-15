@@ -1,0 +1,34 @@
+- hosts: all
+  tasks:
+  - name: Update and upgrade apt packages
+    become: true
+    apt:
+      upgrade: yes
+      update_cache: yes
+      cache_valid_time: 86400 #One day
+
+  - name: Install monitoring packages
+    apt:
+      pkg:
+      - htop
+      - iftop
+      - iotop
+      - glances
+      state: present
+
+  - name: Create sudo group
+    group:
+      name: sudo
+      state: present
+
+  - name: Create feedc0de user
+    user:
+      name: feedc0de
+      groups: sudo
+      state: present
+
+  - name: Install glusterfs packages
+    apt:
+      pkg:
+      - glusterfs-server
+      state: present
